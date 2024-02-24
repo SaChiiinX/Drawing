@@ -1,0 +1,68 @@
+1. Implement Vector constructors an destructors n matrix.cpp. 
+
+   a. Implement the default constructor: Vector::Vector() by allocating: 
+       new double[3] to initialize the data variable. Put 0 in the x and y 
+	   positions and 1 in the w position. 
+	   
+   b. Implement the copy constructor: Vector::Vector(const Vector& oldVector)
+      by allocating new double[3] and initialize x, y and 1 from oldVector.
+	  
+   c. You should already have implemented: Vector::Vector(const double x, const double y) 
+
+   d. In order to recycle space when a vector had been deleted, 
+	  put this: delete[] data; in the body of: Vector::~Vector() 
+	  
+2. Implement basics of the Matrix class in matrix.cpp. 
+
+   a. Declare a variable: double** data; in the private section of the matrix class. 
+      Here data has type: double**. Since double* is an array (as in Vecctor), 
+	  double ** is an array of arrays.
+
+   b. Implement double* Matrix::operator[](int index) const. All you need here is 
+      to put: return data[index]; in the body. Now you can access matrix data
+	  as mtx[i][j]. 
+	  
+   b. Implement the Matrix default constructor: Matrix::Matrix() first initialize
+      data to be: new double*[3]. Write a for-loop to initialize each row of the 
+	  matrix. For each row index i, allocate: new double[3]; and assign it to data[i] 
+	  for some value of i. Use a for-loop to set each entry in the row to 0.0 
+	  Finally, set data[i][i] = 1.0; to put ones on the diaganol to get an identity
+	  matrix. 
+	  
+   c. Implement the Matrix copy constructor: Matrix::Matrix(const Matrix& oldMatrix)
+      It's similar to the copy constructor, but you get the data from oldMatrix[i][j].
+	  
+   d. Implement the Matrix destructor Matrix::~Matrix()
+      for each i, do: delete [] data[i] 
+	  at the end do: delete [] data
+	  
+3. Implement the (matrix x vector) multiplication function:
+   
+   Vector* Matrix::multiply(const Vector* theVector) const
+   
+   Vector* result = new Vector();
+   
+   To get data from "this" matrix, do: data[i][j]
+   To get data from "theVector", do: (*theVector)[i]
+   To put data into result, do: (*result)[i]   
+   
+   return result;
+      
+   Implement the (matrix x matrix) multiplication function. 
+   
+   Matrix* result = new Matrix();
+   
+   To get data from "this" matrix, do: data[i][j]
+   To get data from otherMatrix, do: (*otherMatrix)[i][j]
+   To put data into result, do: (*result)[i][j]
+   
+   return result;
+   
+4. I will leave it to you to implement the matrices for translation, 
+   rotation, shearing, scaling. Just do: new Matrix() and put in the    
+   data. 
+	  
+   
+   
+   
+	

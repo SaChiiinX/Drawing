@@ -1,0 +1,44 @@
+Getting Started on the Drawing Project
+
+
+Part 1: Drawing lines with rubber banding. 
+
+a. Go to the installUnderRoot method. Since you won't be using
+   transformations at first, you should comment out the comment out
+   the first two lines, and replace them with:
+       
+   TransformNode* newXfn = new TransformNode(sceneRoot, newShape, NULL);
+          
+b. Open scene.h and find the Line class declaration. In the private
+   section, declare four double variables (x0, y0, x1, y1) to hold
+   the four double constructor parameters.  Now open scene.cpp and
+   find the Line class constructor. The constructor already
+   includes a call to its base class (ShapeNode) constructor to
+   initialize the inherited color variable. Finish the constructor
+   by replacing :ShapeNode(c) with
+
+      :ShapeNode(c), x0(xx0), y0(yy0), x1(xx1), y1(yy1)
+
+   c. Return to scene.h and declare a variable color of type colorType in
+   the protected section of the ShapeNode class. Next find the
+   ShapeNode constructor in scene.cpp and add code to initialize
+   the color variable. 
+      
+d. Now go to the Line::draw() implementation in scene.cpp. Add the
+   statement setColor(color) to set the color. Then open graphics.h
+   and find the drawLine declaration that takes four doubles. Go
+   back to scene.cpp and implement Line::draw using this graphics
+   function.
+
+e. Now go to graphics.cpp and implement the four-parameter drawLine
+   function calls to OpenGL. Test your program by drawing lines. You
+   should see rubber bands, but the completed line is not yet drawn.
+
+f. Return to scene.h and find the TransformNode declaration.
+   Declare TransformNode* parent in the private section. Declare
+   ShapeNode* shapeNode in the protected section of the class
+   declaration. Find the two TransformNode constructors in
+   Scene.cpp. Add code to initialize parent and shapeNode in both
+   constructors.
+          
+
