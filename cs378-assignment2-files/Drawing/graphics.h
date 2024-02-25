@@ -25,7 +25,7 @@ class TransformStack
    void pop();
    Matrix* top();
   private:
-  //Student must implement.
+	  list<Matrix*> mStack;
 };
 
 void setHighlight(bool highlight);

@@ -68,11 +68,13 @@ void TransformNode::draw(bool displayHelpers) const
 	}
 
 	if (shapeNode != NULL) {
-		shapeNode->draw();
-		set<TransformNode*>::iterator itr;
-		for (itr = child.begin(); itr != child.end(); itr++) {
-			(*itr)->draw(displayHelpers) ;
-		}
+		shapeNode->draw();	
+	}
+	
+	gPush(transform);
+	set<TransformNode*>::iterator itr;
+	for (itr = child.begin(); itr != child.end(); itr++) {
+		(*itr)->draw(displayHelpers);
 	}
 }
 
@@ -235,20 +237,32 @@ void Circle::draw() const
 Polygon::Polygon(const list<Vector*>& vs, colorType c) 
 	: ShapeNode(c)
 {
+	for (auto itr = vs.begin(); itr != vs.end(); itr++) {
+		vertices.push_back(new Vector(**itr));
+	}
+
 }
 
 Polygon::~Polygon()
 {
-
+	for (auto itr = vertices.begin(); itr != vertices.end(); itr++) {
+		delete *itr;
+	}
 }
 
 ShapeNode* Polygon::clone() const
 {
-   return NULL;
+	// idk if these pointers are
+	Polygon* poly = new Polygon(vertices, color);
+    return poly;
 }
 
 void Polygon::draw() const
 {
-
+	if (vertices.size() > 1) {
+		setColor(color);
+		drawPolygon(vertices);
+	}
+	
 }
 

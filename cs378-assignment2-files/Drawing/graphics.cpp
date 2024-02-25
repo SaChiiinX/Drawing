@@ -67,34 +67,36 @@ TransformStack transformStack;
 
 TransformStack::TransformStack()
 {
-
+    //mStack.push_front(new Matrix());
+    this->push(new Matrix());
 }
 
 void TransformStack::push(Matrix* transform)
 {
-
+    mStack.push_front(top()->multiply(transform));
 }
 
 void TransformStack::pop()
 {
-
+    mStack.pop_front();
 }
 
 Matrix* TransformStack::top()
 {
-	return NULL;
+    return *mStack.begin();
 }
 
 
 void gPush(Matrix* transform)
 {
-
+    transformStack.push(transform);
 }
 
 void gPop()
 {
-
+    transformStack.pop();
 }
+
 
 void drawLine(double x0, double y0, double x1, double y1)
 {
@@ -107,10 +109,12 @@ void drawLine(double x0, double y0, double x1, double y1)
 
 void drawLine(Vector* p0, Vector* p1)
 {
+    
     double x0 = (*p0)[0];
     double y0 = (*p0)[1];
     double x1 = (*p1)[0];
     double y1 = (*p1)[1];
+    gPop();
     glBegin(GL_LINES);
     glVertex2d(x0, y0);
     glVertex2d(x1, y1);
@@ -120,7 +124,18 @@ void drawLine(Vector* p0, Vector* p1)
 
 void drawRectangle(double x0, double y0, double x1, double y1)
 {
-
+    Vector* p0 = new Vector(x0, y0);
+    Vector* p1 = new Vector(x0, y1);
+    Vector* p2 = new Vector(x1, y1);
+    Vector* p3 = new Vector(x1, y0);
+    drawLine(p0,p1);
+    drawLine(p1,p2);
+    drawLine(p2, p3);
+    drawLine(p3, p0);
+    delete p0;
+    delete p1;
+    delete p2;
+    delete p3;
 }
 
 void drawCircle(double x0, double y0, double x1, double y1)
@@ -135,7 +150,24 @@ void drawCircle(double cX, double cY, double radius)
 
 void drawPolygon(const list<Vector*>& vertices, bool close)
 {
+    if (vertices.size() <= 1) {
+        return;
+    }
 
+    Vector* first = *vertices.begin();
+    Vector* v1;
+    Vector* v2;
+    auto itr1 = vertices.begin();
+    auto itr2 = vertices.begin();
+    for (itr2++; itr2 != vertices.end(); itr2++){
+        v1 = *itr1;
+        v2 = *itr2;
+        drawLine(v1, v2);
+        itr1++;
+    }
+    if (close) {
+        drawLine(first, v2);
+    }
 }
 
 void drawTransformGismo()

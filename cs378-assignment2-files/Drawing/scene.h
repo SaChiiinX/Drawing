@@ -108,6 +108,7 @@ class Polygon : public ShapeNode
    virtual ShapeNode* clone() const;
    virtual void draw() const;
   private:
+	  list<Vector*> vertices;
 };
 
 #endif
