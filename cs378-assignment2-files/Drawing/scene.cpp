@@ -71,11 +71,16 @@ void TransformNode::draw(bool displayHelpers) const
 		shapeNode->draw();	
 	}
 	
-	gPush(transform);
+	//gPush(transform);
 	set<TransformNode*>::iterator itr;
 	for (itr = child.begin(); itr != child.end(); itr++) {
 		(*itr)->draw(displayHelpers);
 	}
+	
+	if (shapeNode != NULL) {
+	//	gPop();
+	}
+	
 }
 
 TransformNode* TransformNode::getParent() const 

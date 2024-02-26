@@ -68,33 +68,40 @@ TransformStack transformStack;
 TransformStack::TransformStack()
 {
     //mStack.push_front(new Matrix());
-    this->push(new Matrix());
 }
 
 void TransformStack::push(Matrix* transform)
 {
-    mStack.push_front(top()->multiply(transform));
+    //if (mStack.empty()) {
+    //    mStack.push_front(new Matrix());
+    //}
+    //else {
+    //    mStack.push_front(top()->multiply(transform));
+    //}
 }
 
 void TransformStack::pop()
 {
-    mStack.pop_front();
+    //if (mStack.size() > 1) {
+    //    mStack.pop_front();
+    //}
 }
 
 Matrix* TransformStack::top()
 {
-    return *mStack.begin();
+    //return mStack.front();
+    return NULL;
 }
 
 
 void gPush(Matrix* transform)
 {
-    transformStack.push(transform);
+    //transformStack.push(transform);
 }
 
 void gPop()
 {
-    transformStack.pop();
+    //transformStack.pop();
 }
 
 
@@ -145,7 +152,18 @@ void drawCircle(double x0, double y0, double x1, double y1)
 
 void drawCircle(double cX, double cY, double radius)
 {
-
+    double num_points = TWO_PI * radius;
+    Vector* v1;
+    Vector* v2;
+    for (int i = 1; i <= 360; i++) {
+        double angle1 = TWO_PI * i / 360;
+        double angle2 = TWO_PI * (i - 1) / 360;
+        v1 = new Vector(cX+radius*cos(angle1), cY+radius*sin(angle1));
+        v2 = new Vector(cX+radius*cos(angle2), cY+radius*sin(angle2));
+        drawLine(v2, v1);
+    }
+    delete v1;
+    delete v2;
 }
 
 void drawPolygon(const list<Vector*>& vertices, bool close)
