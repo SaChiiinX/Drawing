@@ -4,7 +4,8 @@
 #include "scene.h"
 #include "graphics.h"
 
-
+map<int, TransformNode*> tMap; 
+int gIdentifier;
 
 
 TransformNode::TransformNode(TransformNode* p)
@@ -12,6 +13,9 @@ TransformNode::TransformNode(TransformNode* p)
 	this->parent = p;
 	this->shapeNode = NULL;
 	this->transform = new Matrix();
+	tMap[gIdentifier] = this;
+	this->identifier = gIdentifier;
+	gIdentifier++;
 }
 
 TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
@@ -64,23 +68,24 @@ void TransformNode::scale(double scaleX, double scaleY)
 
 void TransformNode::draw(bool displayHelpers) const
 {
+	glPushName(this->identifier);
+	gPush();
+
 	if (displayHelpers) {
+
 	}
 
 	if (shapeNode != NULL) {
 		shapeNode->draw();	
 	}
 	
-	//gPush(transform);
 	set<TransformNode*>::iterator itr;
 	for (itr = child.begin(); itr != child.end(); itr++) {
 		(*itr)->draw(displayHelpers);
 	}
-	
-	if (shapeNode != NULL) {
-	//	gPop();
-	}
-	
+
+	gPop();
+	glPopName();
 }
 
 TransformNode* TransformNode::getParent() const 
@@ -163,7 +168,7 @@ void TransformNode::deSelect()
 
 TransformNode* TransformNode::nodeLookup(int identifier)
 {
-   return NULL;
+   return tMap[identifier];
 }
 
 
@@ -257,7 +262,6 @@ Polygon::~Polygon()
 
 ShapeNode* Polygon::clone() const
 {
-	// idk if these pointers are
 	Polygon* poly = new Polygon(vertices, color);
     return poly;
 }

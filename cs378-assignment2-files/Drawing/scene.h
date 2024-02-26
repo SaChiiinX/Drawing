@@ -11,6 +11,7 @@ using namespace std;
 
 class TransformNode;
 class ShapeNode;
+int gIdentifier;
 
 
 class TransformNode
@@ -44,6 +45,7 @@ class TransformNode
 	  set<TransformNode*> child;
 	  ShapeNode* shapeNode;
 	  Matrix* transform;
+    int identifier;
 };
 
 class ShapeNode

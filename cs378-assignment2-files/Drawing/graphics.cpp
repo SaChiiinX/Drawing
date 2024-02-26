@@ -67,41 +67,33 @@ TransformStack transformStack;
 
 TransformStack::TransformStack()
 {
-    //mStack.push_front(new Matrix());
+    mStack.push_front(new Matrix());
 }
 
 void TransformStack::push(Matrix* transform)
 {
-    //if (mStack.empty()) {
-    //    mStack.push_front(new Matrix());
-    //}
-    //else {
-    //    mStack.push_front(top()->multiply(transform));
-    //}
+    mStack.push_front(top()->multiply(transform));
 }
 
 void TransformStack::pop()
 {
-    //if (mStack.size() > 1) {
-    //    mStack.pop_front();
-    //}
+   mStack.pop_front();
 }
 
 Matrix* TransformStack::top()
 {
-    //return mStack.front();
-    return NULL;
+    return mStack.front();
 }
 
 
 void gPush(Matrix* transform)
 {
-    //transformStack.push(transform);
+    transformStack.push(transform);
 }
 
 void gPop()
 {
-    //transformStack.pop();
+    transformStack.pop();
 }
 
 
@@ -116,17 +108,21 @@ void drawLine(double x0, double y0, double x1, double y1)
 
 void drawLine(Vector* p0, Vector* p1)
 {
-    
-    double x0 = (*p0)[0];
-    double y0 = (*p0)[1];
-    double x1 = (*p1)[0];
-    double y1 = (*p1)[1];
+    Matrix* m1 = transformStack.top();
+    Vector* v1 = m1->multiply(p0);
+    double x0 = (*v1)[0];
+    double y0 = (*v1)[1];
+    v1 = m1->multiply(p1);
+    double x1 = (*v1)[0];
+    double y1 = (*v1)[1];
+    delete v1;
     gPop();
     glBegin(GL_LINES);
     glVertex2d(x0, y0);
     glVertex2d(x1, y1);
     glEnd();
     glFlush();
+    
 }
 
 void drawRectangle(double x0, double y0, double x1, double y1)
@@ -147,23 +143,33 @@ void drawRectangle(double x0, double y0, double x1, double y1)
 
 void drawCircle(double x0, double y0, double x1, double y1)
 {
+    double xdiff = x1-x0;
+    double ydiff = y1-y0;
+    double r = sqrt(xdiff*xdiff + ydiff*ydiff);
 
+    drawCircle(x0,y0,r);
 }
 
 void drawCircle(double cX, double cY, double radius)
 {
     double num_points = TWO_PI * radius;
+
+    if(num_points < 10){
+        num_points = 10;
+    }
+
     Vector* v1;
     Vector* v2;
-    for (int i = 1; i <= 360; i++) {
-        double angle1 = TWO_PI * i / 360;
-        double angle2 = TWO_PI * (i - 1) / 360;
+    for (int i = 1; i <= num_points; i++) {
+        double angle1 = TWO_PI * i / num_points;
+        double angle2 = TWO_PI * (i - 1) / num_points;
         v1 = new Vector(cX+radius*cos(angle1), cY+radius*sin(angle1));
         v2 = new Vector(cX+radius*cos(angle2), cY+radius*sin(angle2));
         drawLine(v2, v1);
+        delete v2;
     }
     delete v1;
-    delete v2;
+    
 }
 
 void drawPolygon(const list<Vector*>& vertices, bool close)
