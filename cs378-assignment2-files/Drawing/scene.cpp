@@ -73,20 +73,17 @@ void TransformNode::draw(bool displayHelpers) const
 	glPushName(this->identifier);
 	gPush(this->transform);
 
-	if (displayHelpers) {
-
-	}
-
-	if (shapeNode != NULL) {
+	if (shapeNode) {
 		shapeNode->draw();	
+	}else if(displayHelpers){
+		drawTransformGismo();
 	}
-	
-	set<TransformNode*>::iterator itr;
-	for (itr = child.begin(); itr != child.end(); itr++) {
+	for (set<TransformNode*>::iterator itr = child.begin(); itr != child.end(); itr++) {
 		(*itr)->draw(displayHelpers);
 	}
 
 	gPop();
+	setHighlight(highlight);
 	glPopName();
 }
 
