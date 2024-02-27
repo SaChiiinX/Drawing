@@ -1,0 +1,56 @@
+// Code neededin scene.spp for picking to work.
+// ASsign id number to each TransformNode. Store it in a hash table. 
+// Implement function nodeLookup to get TransformNode* from identifier. 
+// In TransformationNode::draw: glPushName(identifier) ... glPopName()
+
+int TransformNode::count = 0;
+map<int,TransformNode*> TransformNode::idNodeTable;
+
+TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
+  : parent(p), shapeNode(s), transform(t), selected(false), identifier(count)
+{
+	count++;
+	idNodeTable[identifier] = this;
+}
+
+TransformNode* TransformNode::nodeLookup(int identifier)
+{
+	return idNodeTable[identifier];
+}
+
+
+// Code needed in graphics.cpp to turn selected items white: 
+
+bool highlight = false;
+
+bool getHighlight()
+{
+  return highlight;
+}
+
+void setHighlight(bool h)
+{
+  if (h) setColor(HIGHLIGHT_COLOR);
+  highlight = h;
+}
+
+
+// Code needed in scene.cpp for selection. 
+
+void TransformNode::draw(bool displayHelpers) const
+{
+  bool highlight = getHighlight();    
+  else setColor(HELPER_COLOR);
+  glPushName(identifier);
+  gPush(transform);
+  if (shapeNode) shapeNode->draw();
+  else if (displayHelpers) drawTransformGismo();
+  for (list<TransformNode*>::const_iterator iter = children.begin();
+       iter != children.end();
+       ++iter)
+    (*iter)->draw(displayHelpers);
+  gPop();
+  setHighlight(highlight); 
+  glPopName();
+}
+
