@@ -11,7 +11,7 @@ using namespace std;
 
 class TransformNode;
 class ShapeNode;
-int gIdentifier;
+int pp = 0;
 
 
 class TransformNode

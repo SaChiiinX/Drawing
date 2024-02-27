@@ -5,7 +5,6 @@
 #include "graphics.h"
 
 map<int, TransformNode*> tMap; 
-int gIdentifier;
 
 
 TransformNode::TransformNode(TransformNode* p)
@@ -13,9 +12,9 @@ TransformNode::TransformNode(TransformNode* p)
 	this->parent = p;
 	this->shapeNode = NULL;
 	this->transform = new Matrix();
-	tMap[gIdentifier] = this;
-	this->identifier = gIdentifier;
-	gIdentifier++;
+	tMap[pp] = this;
+	this->identifier = pp;
+	pp++;
 }
 
 TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
@@ -23,6 +22,9 @@ TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
 	this->parent = p;
 	this->shapeNode = s;
 	this->transform = t;
+	tMap[pp] = this;
+	this->identifier = pp;
+	pp++;
 }
 
 
@@ -69,7 +71,7 @@ void TransformNode::scale(double scaleX, double scaleY)
 void TransformNode::draw(bool displayHelpers) const
 {
 	glPushName(this->identifier);
-	gPush();
+	gPush(this->transform);
 
 	if (displayHelpers) {
 
