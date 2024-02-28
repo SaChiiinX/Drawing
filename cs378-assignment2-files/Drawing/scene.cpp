@@ -46,8 +46,6 @@ TransformNode::~TransformNode()
 
 	// deletes matrix of (this) transformNode
 	delete this->transform;
-	// deletes shapeNode of (this) transformNode
-	delete this->shapeNode;
 }
 
 
@@ -79,7 +77,6 @@ void TransformNode::draw(bool displayHelpers) const
 {
 	bool highlighted = getHighlight();
 	if (selected) setHighlight(true);
-	setColor(WHITE);
 	glPushName(this->identifier);
 	gPush(this->transform);
 

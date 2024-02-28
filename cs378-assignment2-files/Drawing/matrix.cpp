@@ -85,6 +85,8 @@ Matrix::~Matrix()
 	for (int i = 0; i < 3; i++) {
 		delete[] data[i];
 	}
+
+	delete[] data;
 }
 
 Matrix* Matrix::multiply(const Matrix* otherMatrix) const

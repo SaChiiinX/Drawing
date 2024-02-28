@@ -110,11 +110,11 @@ void drawLine(Vector* p0, Vector* p1)
     Matrix* m1 = transformStack.top();
     Vector* v0 = m1->multiply(p0);
     Vector* v1 = m1->multiply(p1);
-    double x0 = (*v0)[0];
-    double y0 = (*v0)[1];
-    double x1 = (*v1)[0];
-    double y1 = (*v1)[1];
-    //printf("x0:%d, y0:%d, x1:%d, y1:%d\n", x0, y0, x1, y1);
+    double x0 = (*p0)[0];
+    double y0 = (*p0)[1];
+    double x1 = (*p1)[0];
+    double y1 = (*p1)[1];
+    printf("x0:%d, y0:%d, x1:%d, y1:%d\n", x0, y0, x1, y1);
     glBegin(GL_LINES);
     glVertex2d(x0, y0);
     glVertex2d(x1, y1);
