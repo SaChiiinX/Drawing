@@ -13,10 +13,13 @@ TransformNode::TransformNode(TransformNode* p)
 	this->parent = p;
 	this->shapeNode = NULL;
 	this->transform = new Matrix();
-	tMap[gIdentifier] = this;
 	this->identifier = gIdentifier;
-	gIdentifier++;
 	this->selected = false;
+
+	// stores a mapping of identifier -> transformNode
+	tMap[gIdentifier] = this;
+	gIdentifier++;
+	
 }
 
 TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
@@ -24,51 +27,52 @@ TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
 	this->parent = p;
 	this->shapeNode = s;
 	this->transform = t;
-	tMap[gIdentifier] = this;
 	this->identifier = gIdentifier;
-	gIdentifier++;
 	this->selected = false;
+
+	// stores a mapping of identifier -> transformNode
+	tMap[gIdentifier] = this;
+	gIdentifier++;
+	
 }
 
 
 TransformNode::~TransformNode()
 {
-	set<TransformNode*>::iterator itr;
-	for (itr = this->child.begin(); itr != this->child.end(); itr++) {
+	// deletes each child attached to (this) transformNode
+	for (set<TransformNode*>::iterator itr = this->child.begin(); itr != this->child.end(); itr++) {
 		delete* itr;
 	}
 
+	// deletes matrix of (this) transformNode
 	delete this->transform;
+	// deletes shapeNode of (this) transformNode
 	delete this->shapeNode;
 }
 
 
 void TransformNode::translate(double deltaX, double deltaY)
 {
-	delete this->transform;
 	Matrix* m1 = Matrix::translation(deltaX, deltaY);
-	this->transform = m1;
+	this->transform = transform->multiply(m1);
 }
 
 void TransformNode::rotate(double theta)
 {
-	delete this->transform;
 	Matrix* m1 = Matrix::rotation(theta);
-	this->transform = m1;
+	this->transform = transform->multiply(m1);
 }
 
 void TransformNode::shear(double shearXY, double shearYX)
 {
-	delete this->transform;
 	Matrix* m1 = Matrix::shearing(shearXY, shearYX);
-	this->transform = m1;
+	this->transform = transform->multiply(m1);
 }
 
 void TransformNode::scale(double scaleX, double scaleY)
 {
-	delete this->transform;
 	Matrix* m1 = Matrix::scaling(scaleX, scaleY);
-	this->transform = m1;
+	this->transform = transform->multiply(m1);
 }
 
 void TransformNode::draw(bool displayHelpers) const

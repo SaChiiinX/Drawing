@@ -75,8 +75,7 @@ void TransformStack::push(Matrix* transform)
 
 void TransformStack::pop()
 {
-
-        mStack.pop();
+    mStack.pop();
 }
 
 Matrix* TransformStack::top()
