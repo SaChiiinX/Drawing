@@ -4,7 +4,8 @@
 #include "scene.h"
 #include "graphics.h"
 
-map<int, TransformNode*> tMap; 
+map<int, TransformNode*> tMap;
+int gIdentifier = 0;
 
 
 TransformNode::TransformNode(TransformNode* p)
@@ -12,9 +13,10 @@ TransformNode::TransformNode(TransformNode* p)
 	this->parent = p;
 	this->shapeNode = NULL;
 	this->transform = new Matrix();
-	tMap[pp] = this;
-	this->identifier = pp;
-	pp++;
+	tMap[gIdentifier] = this;
+	this->identifier = gIdentifier;
+	gIdentifier++;
+	this->selected = false;
 }
 
 TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
@@ -22,9 +24,10 @@ TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
 	this->parent = p;
 	this->shapeNode = s;
 	this->transform = t;
-	tMap[pp] = this;
-	this->identifier = pp;
-	pp++;
+	tMap[gIdentifier] = this;
+	this->identifier = gIdentifier;
+	gIdentifier++;
+	this->selected = false;
 }
 
 
@@ -70,6 +73,9 @@ void TransformNode::scale(double scaleX, double scaleY)
 
 void TransformNode::draw(bool displayHelpers) const
 {
+	bool highlighted = getHighlight();
+	if (selected) setHighlight(true);
+	setColor(WHITE);
 	glPushName(this->identifier);
 	gPush(this->transform);
 
@@ -83,7 +89,7 @@ void TransformNode::draw(bool displayHelpers) const
 	}
 
 	gPop();
-	setHighlight(highlight);
+	setHighlight(false);
 	glPopName();
 }
 
@@ -100,13 +106,16 @@ void TransformNode::setParent(TransformNode* p)
 void TransformNode::changeParent(TransformNode* newParent)
 {
 	this->parent = newParent;
+	newParent->addChild(this);
 }
 
 void TransformNode::groupObjects(set<TransformNode*>& groupMembers)
 {
+	TransformNode* newNode = new TransformNode(this);
+	this->addChild(newNode);
 	set<TransformNode*>::iterator itr;
 	for (itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
-		this->child.insert(*itr);
+		(*itr)->changeParent(newNode);
 	}
 }
 
@@ -117,7 +126,7 @@ Matrix* TransformNode::getTransform() const
 
 TransformNode* TransformNode::clone() const
 {
-   return NULL;
+   return new TransformNode(parent, shapeNode, transform);
 }
 
 void TransformNode::addChild(TransformNode* child)
@@ -157,12 +166,12 @@ TransformNode* TransformNode::previousChild(TransformNode* child) const
 
 void TransformNode::select() 
 {
-	setHighlight(true);
+	selected = true;
 }
 
 void TransformNode::deSelect() 
 {
-	setHighlight(false);
+	selected = false;
 }
 
 TransformNode* TransformNode::nodeLookup(int identifier)
@@ -246,7 +255,7 @@ void Circle::draw() const
 Polygon::Polygon(const list<Vector*>& vs, colorType c) 
 	: ShapeNode(c)
 {
-	for (auto itr = vs.begin(); itr != vs.end(); itr++) {
+	for (list<Vector*>::const_iterator itr = vs.begin(); itr != vs.end(); itr++) {
 		vertices.push_back(new Vector(**itr));
 	}
 
@@ -254,7 +263,7 @@ Polygon::Polygon(const list<Vector*>& vs, colorType c)
 
 Polygon::~Polygon()
 {
-	for (auto itr = vertices.begin(); itr != vertices.end(); itr++) {
+	for (list<Vector*>::iterator itr = vertices.begin(); itr != vertices.end(); itr++) {
 		delete *itr;
 	}
 }

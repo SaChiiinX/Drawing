@@ -61,33 +61,33 @@ void setColor( colorType color )
     }
 }
 
-
-
 TransformStack transformStack;
 
 TransformStack::TransformStack()
 {
-    mStack.push_front(new Matrix());
+    mStack.push(new Matrix());
 }
 
 void TransformStack::push(Matrix* transform)
 {
-    mStack.push_front(top()->multiply(transform));
+    mStack.push(top()->multiply(transform));
 }
 
 void TransformStack::pop()
 {
-   mStack.pop_front();
+
+        mStack.pop();
 }
 
 Matrix* TransformStack::top()
 {
-    return mStack.front();
+    return mStack.top();
 }
 
 
 void gPush(Matrix* transform)
 {
+
     transformStack.push(transform);
 }
 
@@ -109,19 +109,20 @@ void drawLine(double x0, double y0, double x1, double y1)
 void drawLine(Vector* p0, Vector* p1)
 {
     Matrix* m1 = transformStack.top();
-    Vector* v1 = m1->multiply(p0);
-    double x0 = (*v1)[0];
-    double y0 = (*v1)[1];
-    v1 = m1->multiply(p1);
+    Vector* v0 = m1->multiply(p0);
+    Vector* v1 = m1->multiply(p1);
+    double x0 = (*v0)[0];
+    double y0 = (*v0)[1];
     double x1 = (*v1)[0];
     double y1 = (*v1)[1];
-    delete v1;
-    gPop();
+    //printf("x0:%d, y0:%d, x1:%d, y1:%d\n", x0, y0, x1, y1);
     glBegin(GL_LINES);
     glVertex2d(x0, y0);
     glVertex2d(x1, y1);
     glEnd();
     glFlush();
+    delete v0;
+    delete v1;
     
 }
 
@@ -181,14 +182,15 @@ void drawPolygon(const list<Vector*>& vertices, bool close)
     Vector* first = *vertices.begin();
     Vector* v1;
     Vector* v2;
-    auto itr1 = vertices.begin();
-    auto itr2 = vertices.begin();
+    list<Vector*>::const_iterator itr1 = vertices.begin();
+    list<Vector*>::const_iterator itr2= vertices.begin();
     for (itr2++; itr2 != vertices.end(); itr2++){
         v1 = *itr1;
         v2 = *itr2;
         drawLine(v1, v2);
         itr1++;
     }
+
     if (close) {
         drawLine(first, v2);
     }

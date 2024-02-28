@@ -11,7 +11,6 @@ using namespace std;
 
 class TransformNode;
 class ShapeNode;
-int pp = 0;
 
 
 class TransformNode
@@ -45,7 +44,8 @@ class TransformNode
 	  set<TransformNode*> child;
 	  ShapeNode* shapeNode;
 	  Matrix* transform;
-    int identifier;
+	  int identifier;
+	  bool selected;
 };
 
 class ShapeNode

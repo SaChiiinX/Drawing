@@ -73,25 +73,22 @@ Matrix* Matrix::multiply(const Matrix* otherMatrix) const
 {
 	Matrix* ret = new Matrix();
 	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			ret->data[i][j] = data[i][j] * otherMatrix->data[i][j];
-			ret->data[i][j + 1] = data[i][j] * otherMatrix->data[i + 1][j];
-			ret->data[i][j + 1] = data[i][j] * otherMatrix->data[i + 2][j];
-		}
+			ret->data[i][0] = data[i][0] * (*otherMatrix)[0][i];
+			ret->data[i][1] = data[i][1] * (*otherMatrix)[1][i];
+			ret->data[i][2] = data[i][2] * (*otherMatrix)[2][i];
 	}
 	return ret;
 }
 
 Vector* Matrix::multiply(const Vector* theVector) const
 {
-	double x = 0;
-	double y = 0;
-	for (int i = 0; i < 3; i++) {
-		x += data[i][0] * (*theVector)[0];
-		y += data[i][1] * (*theVector)[1];
-	}
+	double x = (*theVector)[0];
+	double y = (*theVector)[1];
+	double z = (*theVector)[2];
+	double x1 = (data[0][0] * x) + (data[0][1] * y) + (data[0][2] * z);
+	double y1 = (data[1][0]) * x + (data[1][1] * y) + (data[1][2] * z);
 
-	return new Vector(x, y);
+	return new Vector(x1, y1);
 }
 
 double* Matrix::operator[](int index) const
