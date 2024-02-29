@@ -92,16 +92,13 @@ Matrix::~Matrix()
 Matrix* Matrix::multiply(const Matrix* otherMatrix) const
 {
 	Matrix* ret = new Matrix();
-	double sum = 0;
 	for (int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++){
 			// i,j loop for which index of 2d array to update
-
 			for(int k = 0; k < 3; k++){
 				// k loop to reloop over ith row(thisMatrix) and ith column(otherMatrix) to calculate product
-				sum += data[i][k]*(*otherMatrix)[k][i];
+				(*ret)[i][j] += data[i][k]*(*otherMatrix)[k][j];
 			}
-			(*ret)[i][j] = sum;
 		}	  
 	}
 	return ret;
