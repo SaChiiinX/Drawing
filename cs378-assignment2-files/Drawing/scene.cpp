@@ -11,6 +11,9 @@ int gIdentifier = 0;
 TransformNode::TransformNode(TransformNode* p)
 {
 	this->parent = p;
+	if(p){ 
+		p->addChild(this); 
+	}
 	this->shapeNode = NULL;
 	this->transform = new Matrix();
 	this->identifier = gIdentifier;
@@ -25,6 +28,9 @@ TransformNode::TransformNode(TransformNode* p)
 TransformNode::TransformNode(TransformNode* p, ShapeNode* s, Matrix* t)
 {
 	this->parent = p;
+	if (p) {
+		p->addChild(this);
+	}
 	this->shapeNode = s;
 	this->transform = t;
 	this->identifier = gIdentifier;
@@ -101,19 +107,25 @@ TransformNode* TransformNode::getParent() const
 
 void TransformNode::setParent(TransformNode* p) 
 { 
+	if (parent) {
+		parent->removeChild(this);
+	}
 	this->parent = p;
+	p->addChild(this);
 }
 
 void TransformNode::changeParent(TransformNode* newParent)
 {
-	this->parent = newParent;
+	
+	parent->removeChild(this);
+	setParent(newParent);
 	newParent->addChild(this);
 }
 
 void TransformNode::groupObjects(set<TransformNode*>& groupMembers)
 {
 	TransformNode* newNode = new TransformNode(this);
-	this->addChild(newNode);
+	newNode->translate(5, 5);
 	set<TransformNode*>::iterator itr;
 	for (itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
 		(*itr)->changeParent(newNode);
