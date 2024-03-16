@@ -75,6 +75,7 @@ void TransformStack::push(Matrix* transform)
 
 void TransformStack::pop()
 {
+    //delete top();
     mStack.pop();
 }
 
@@ -108,13 +109,14 @@ void drawLine(double x0, double y0, double x1, double y1)
 void drawLine(Vector* p0, Vector* p1)
 {
     Matrix* m1 = transformStack.top();
+    printf("p0x:%f, p0y:%f, p1x:%f, p1y:%f\n", (*p0)[0], (*p0)[1], (*p1)[0], (*p1)[1]);
     Vector* v0 = m1->multiply(p0);
     Vector* v1 = m1->multiply(p1);
     double x0 = (*v0)[0];
     double y0 = (*v0)[1];
     double x1 = (*v1)[0];
     double y1 = (*v1)[1];
-    printf("x0:%d, y0:%d, x1:%d, y1:%d\n", x0, y0, x1, y1);
+    printf("x0:%f, y0:%f, x1:%f, y1:%f\n", x0, y0, x1, y1);
     glBegin(GL_LINES);
     glVertex2d(x0, y0);
     glVertex2d(x1, y1);

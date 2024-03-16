@@ -59,10 +59,16 @@ Matrix::Matrix()
 	data[1] = new double[3];
 	data[2] = new double[3];
 
-	//intialize diagonal to be [1,1,1]
-	data[0][0] = 1;
-	data[1][1] = 1;
-	data[2][2] = 1;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (i == j) {
+				data[i][j] = 1;
+			}
+			else {
+				data[i][j] = 0;
+			}
+		}
+	}
 }
 
 Matrix::Matrix(const Matrix& oldMatrix) 
@@ -73,10 +79,11 @@ Matrix::Matrix(const Matrix& oldMatrix)
 	data[1] = new double[3];
 	data[2] = new double[3];
 
-	// intialize diagonal to be [x,y,z] of another matrix
-	data[0][0] = oldMatrix.data[0][0];
-	data[1][1] = oldMatrix.data[1][1];
-	data[2][2] = oldMatrix.data[2][2];
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			data[i][j] = oldMatrix.data[i][j];
+		}
+	}
 }
 
 Matrix::~Matrix()
@@ -92,15 +99,19 @@ Matrix::~Matrix()
 Matrix* Matrix::multiply(const Matrix* otherMatrix) const
 {
 	Matrix* ret = new Matrix();
+	double sum;
 	for (int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++){
-			// i,j loop for which index of 2d array to update
-			for(int k = 0; k < 3; k++){
-				// k loop to reloop over ith row(thisMatrix) and ith column(otherMatrix) to calculate product
-				(*ret)[i][j] += data[i][k]*(*otherMatrix)[k][j];
-			}
-		}	  
+			sum = 0;
+			sum += data[i][0] * (*otherMatrix)[0][j];
+			sum += data[i][1] * (*otherMatrix)[1][j];
+			sum += data[i][2] * (*otherMatrix)[2][j];
+
+			(*ret)[i][j] = sum;
+		}	
+		
 	}
+
 	return ret;
 }
 
@@ -111,8 +122,8 @@ Vector* Matrix::multiply(const Vector* theVector) const
 	double y = (*theVector)[1];
 	double z = (*theVector)[2];
 	// gets new x and y for resulting vector from the multiplication
-	double x1 = (data[0][0] * x) + (data[0][1] * y) + (data[0][2] * z);
-	double y1 = (data[1][0]) * x + (data[1][1] * y) + (data[1][2] * z);
+	double x1 = data[0][0] * x + data[0][1] * y + data[0][2] * z;
+	double y1 = data[1][0] * x + data[1][1] * y + data[1][2] * z;
 
 	return new Vector(x1, y1);
 }
