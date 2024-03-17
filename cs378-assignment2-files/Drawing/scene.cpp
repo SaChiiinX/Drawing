@@ -125,15 +125,18 @@ void TransformNode::changeParent(TransformNode* newParent)
 void TransformNode::groupObjects(set<TransformNode*>& groupMembers)
 {
 	double rectSize = 12.5;
+	ShapeNode* rect = new Rectangle(-rectSize, -rectSize, rectSize, rectSize, YELLOW);
+
+	TransformNode* newNode;
 	if (this){
-		TransformNode* newNode = new TransformNode(this, new Rectangle(-rectSize, -rectSize, rectSize, rectSize), transform);
+		newNode = new TransformNode(this, rect, transform);
 	}else{
-		TransformNode* newNode = new TransformNode(this, new Rectangle(-rectSize, -rectSize, rectSize, rectSize), new Matrix());
+		newNode = new TransformNode(this, rect, new Matrix());
 	}
+	rect->setTransformNode(newNode);
 	
 	newNode->translate(5, 5);
-	set<TransformNode*>::iterator itr;
-	for (itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
+	for (set<TransformNode*>::iterator itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
 		(*itr)->changeParent(newNode);
 	}
 }
@@ -186,11 +189,17 @@ TransformNode* TransformNode::previousChild(TransformNode* child) const
 void TransformNode::select() 
 {
 	selected = true;
+	for (set<TransformNode*>::iterator itr = this->child.begin(); itr != this->child.end(); itr++) {
+		(*itr)->selected = true;
+	}
 }
 
 void TransformNode::deSelect() 
 {
 	selected = false;
+	for (set<TransformNode*>::iterator itr = this->child.begin(); itr != this->child.end(); itr++) {
+		(*itr)->selected = false;
+	}
 }
 
 TransformNode* TransformNode::nodeLookup(int identifier)
