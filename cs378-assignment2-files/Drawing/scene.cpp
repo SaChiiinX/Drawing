@@ -124,7 +124,13 @@ void TransformNode::changeParent(TransformNode* newParent)
 
 void TransformNode::groupObjects(set<TransformNode*>& groupMembers)
 {
-	TransformNode* newNode = new TransformNode(this);
+	double rectSize = 12.5;
+	if (this){
+		TransformNode* newNode = new TransformNode(this, new Rectangle(-rectSize, -rectSize, rectSize, rectSize), transform);
+	}else{
+		TransformNode* newNode = new TransformNode(this, new Rectangle(-rectSize, -rectSize, rectSize, rectSize), new Matrix());
+	}
+	
 	newNode->translate(5, 5);
 	set<TransformNode*>::iterator itr;
 	for (itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
