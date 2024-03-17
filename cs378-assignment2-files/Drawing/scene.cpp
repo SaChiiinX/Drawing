@@ -190,7 +190,7 @@ void TransformNode::select()
 {
 	selected = true;
 	for (set<TransformNode*>::iterator itr = this->child.begin(); itr != this->child.end(); itr++) {
-		(*itr)->selected = true;
+		(*itr)->select();
 	}
 }
 
@@ -198,7 +198,7 @@ void TransformNode::deSelect()
 {
 	selected = false;
 	for (set<TransformNode*>::iterator itr = this->child.begin(); itr != this->child.end(); itr++) {
-		(*itr)->selected = false;
+		(*itr)->deSelect();
 	}
 }
 
