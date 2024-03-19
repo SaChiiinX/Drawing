@@ -58,25 +58,25 @@ TransformNode::~TransformNode()
 void TransformNode::translate(double deltaX, double deltaY)
 {
 	Matrix* m1 = Matrix::translation(deltaX, deltaY);
-	this->transform = transform->multiply(m1);
+	this->transform = m1->multiply(transform);
 }
 
 void TransformNode::rotate(double theta)
 {
 	Matrix* m1 = Matrix::rotation(theta);
-	this->transform = transform->multiply(m1);
+	this->transform = m1->multiply(transform);
 }
 
 void TransformNode::shear(double shearXY, double shearYX)
 {
 	Matrix* m1 = Matrix::shearing(shearXY, shearYX);
-	this->transform = transform->multiply(m1);
+	this->transform = m1->multiply(transform);
 }
 
 void TransformNode::scale(double scaleX, double scaleY)
 {
 	Matrix* m1 = Matrix::scaling(scaleX, scaleY);
-	this->transform = transform->multiply(m1);
+	this->transform = m1->multiply(transform);
 }
 
 void TransformNode::draw(bool displayHelpers) const
@@ -138,6 +138,7 @@ void TransformNode::groupObjects(set<TransformNode*>& groupMembers)
 	newNode->translate(5, 5);
 	for (set<TransformNode*>::iterator itr = groupMembers.begin(); itr != groupMembers.end(); itr++){
 		(*itr)->changeParent(newNode);
+		(*itr)->translate(-5, -5);
 	}
 }
 
